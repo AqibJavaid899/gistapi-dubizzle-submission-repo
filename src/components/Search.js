@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Octicon from "react-octicon";
 import { useRecoilState } from "recoil";
 
-import { getGistForUser } from "../services/gistService";
+import { getGistForUser, getPublicGists } from "../services/gistService";
 import { gistListAtom } from "../recoil/atoms/gistListAtom";
 
 const Search = () => {
@@ -16,14 +16,15 @@ const Search = () => {
       if (username.length > 0) {
         const response = await getGistForUser(username);
         setGistList(response.data);
+      } else {
+        const response = await getPublicGists();
+        setGistList(response.data);
       }
     }, 1000);
 
     // Cleaning up the pending API call
     return () => clearTimeout(getGistList);
   }, [username, setGistList]);
-
-  console.log("Username is : ", username);
 
   return (
     <Wrapper>

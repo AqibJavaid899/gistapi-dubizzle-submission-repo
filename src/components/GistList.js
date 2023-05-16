@@ -14,7 +14,6 @@ const GistList = () => {
     // Function fetching Public Gist data from the Octokit Library
     const fetchData = async () => {
       const response = await getPublicGists();
-      console.log("Public Data is : ", response.data);
       setGistList(response.data);
     };
     fetchData();
