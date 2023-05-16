@@ -1,17 +1,46 @@
-import React from 'react'
-import styled from 'styled-components'
-import Octicon from 'react-octicon'
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Octicon from "react-octicon";
+import { useRecoilState } from "recoil";
+
+import { getGistForUser } from "../services/gistService";
+import { gistListAtom } from "../recoil/atoms/gistListAtom";
 
 const Search = () => {
+  const [username, setUsername] = useState("");
+  const [gistList, setGistList] = useRecoilState(gistListAtom);
+
+  useEffect(() => {
+    // Use Debouncing logic to halt the API call until the X amount of time passed between the last and current call
+    const getGistList = setTimeout(async () => {
+      if (username.length > 0) {
+        const response = await getGistForUser(username);
+        setGistList(response.data);
+      }
+    }, 1000);
+
+    // Cleaning up the pending API call
+    return () => clearTimeout(getGistList);
+  }, [username, setGistList]);
+
+  console.log("Username is : ", username);
+
   return (
     <Wrapper>
       <InputBox>
-      <Octicon name="search" />
-      <Input placeholder="Search Gists for the username"/>
+        <Octicon name="search" />
+        <Input
+          type="text"
+          autoComplete="false"
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Search Gists for the username"
+        />
       </InputBox>
     </Wrapper>
-  )
-}
+  );
+};
 
 const Wrapper = styled.div`
   padding: 8px;
@@ -32,10 +61,9 @@ const Input = styled.input`
   border: none;
   width: 100%;
   font-size: 16px;
-
-  &:focus{
+  &:focus {
     outline: 0;
   }
 `;
 
-export default Search
+export default Search;

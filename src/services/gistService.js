@@ -1,6 +1,8 @@
 import { Octokit } from "@octokit/rest";
-const octokit = new Octokit()
 
-export const getPublicGists = () => octokit.gists.listPublic()
+const octokit = new Octokit();
 
-export const getGistForUser = username =>  octokit.gists.listForUser({ username });
+export const getPublicGists = () => octokit.gists.listPublic();
+
+export const getGistForUser = (username) =>
+  octokit.gists.listForUser({ username });
